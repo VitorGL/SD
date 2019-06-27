@@ -80,6 +80,7 @@ máquinas com tempos muito diferentes dos outros.
 seu relógio deve ser ajustado (esse valor pode ser positivo ou
 negativo)
   >
+  >
   >Precisão: depende do round trip time
   >
   >Tolerância a falhas: Calcula a média dos tempos para um
