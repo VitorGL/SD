@@ -65,4 +65,27 @@ condição inicial), ele inicia uma nova eleição
   >  * O maior sempre vence, o valentão!
 
 * #### Berkley
+  >* É escolhido um computador para ser o co-ordenador (master)
   >
+  >* O master periodicamente contacta os outros computadores (slaves),
+  >
+  >* O master faz uma estimativa do tempo local de cada slave,
+baseado no rtt.
+  >
+  >* O master calcula o tempo médio de todos os computadores,
+ignorando valores de transmissão demasiado elevados e
+máquinas com tempos muito diferentes dos outros.
+  >
+  >* Finalmente o master envia a cada computador o valor de que o
+seu relógio deve ser ajustado (esse valor pode ser positivo ou
+negativo)
+  >
+  Precisão: depende do round trip time
+  >
+  Tolerância a falhas: Calcula a média dos tempos para um
+subconjunto de computadores que diferem a até um certo
+valor máximo. Ignora mensagens cujo tempo de transmissão é
+demasiado elevado.
+  >
+  Oque fazer se o master falha?
+Eleger um novo coordenador. 
