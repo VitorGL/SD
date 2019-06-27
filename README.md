@@ -80,12 +80,12 @@ máquinas com tempos muito diferentes dos outros.
 seu relógio deve ser ajustado (esse valor pode ser positivo ou
 negativo)
   >
-  Precisão: depende do round trip time
+  >Precisão: depende do round trip time
   >
-  Tolerância a falhas: Calcula a média dos tempos para um
+  >Tolerância a falhas: Calcula a média dos tempos para um
 subconjunto de computadores que diferem a até um certo
 valor máximo. Ignora mensagens cujo tempo de transmissão é
 demasiado elevado.
   >
-  Oque fazer se o master falha?
+  >Oque fazer se o master falha?
 Eleger um novo coordenador. 
