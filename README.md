@@ -65,9 +65,9 @@ condição inicial), ele inicia uma nova eleição
   >  * O maior sempre vence, o valentão!
 
 * #### Berkley
-  >* É escolhido um computador para ser o co-ordenador (master)
+  >* É escolhido um processo para ser o co-ordenador (master)
   >
-  >* O master periodicamente contacta os outros computadores (slaves),
+  >* O master periodicamente contacta os outros processos (slaves),
   >
   >* O master faz uma estimativa do tempo local de cada slave,
 baseado no rtt.

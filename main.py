@@ -1,6 +1,7 @@
 import relogio
 import com
 import os
+import time
 
 comunicacao = com.Comunicacao()
 PID = int(os.getpid())
@@ -88,16 +89,9 @@ class BerkleySub:
 
     def identificar_resposta(self, id, resp):
         msg = None
+        print("Cheguei Sub")
+        exit(0)
 
-        if PID != id:
-            if resp == "eleicao":
-                if PID > id:
-                    msg = "eleicao"
-                else:
-                    msg = "OK"
-                mudanca = True
-
-        return mudanca, msg
 
 
 class BerkleyLider:
@@ -105,19 +99,11 @@ class BerkleyLider:
         pass
 
     def identificar_resposta(self, id, resp):
-        mudanca = None
         msg = None
+        print("Cheguei Lid")
+        exit(0)
 
-        if PID != id:
-
-            if resp == "eleicao":
-                if PID > id:
-                    msg = "eleicao"
-                else:
-                    msg = "OK"
-                mudanca = True
-
-        return mudanca, msg
+        return None, msg
 
 def main():
 
@@ -142,6 +128,8 @@ def main():
         if msg:
             comunicacao.enviar(str(PID) + '/' + msg)
             print("enviado:", str(PID) + '/' + msg)
+
+        time.sleep(1)
 
 
 main()
