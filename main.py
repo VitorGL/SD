@@ -6,7 +6,13 @@ import time
 comunicacao = com.Comunicacao()
 PID = int(os.getpid())
 
+
 class Sistema:
+    def __init__(self):
+        self.timeout = 0
+        self.ultima_msg = None
+        self.alg = None
+
     def iniciar_bully(self):
         msg = "eleicao"
 
@@ -21,12 +27,19 @@ class Sistema:
         id = int(resp[:resp.index('/')])
         resp = resp[resp.index('/') + 1:]
 
+        if resp == '/' and id == PID:
+            self.timeout += 1
+
         estado, msg = self.alg.identificar_resposta(id, resp)
+
+        if msg is not None:
+            self.ultima_msg = msg
 
         if estado is not None:
             self.alg = estado
 
         return msg
+
 
 class BullySub:
     def identificar_resposta(self, id, resp):
@@ -43,6 +56,7 @@ class BullySub:
                     msg = "OK"
 
         return estado, msg
+
 
 class BullyInit:
 
@@ -64,6 +78,7 @@ class BullyInit:
 
         return estado, msg
 
+
 class BullyLider:
     def identificar_resposta(self, id, resp):
         msg = None
@@ -83,16 +98,16 @@ class BullyLider:
 
         return estado, msg
 
+
 class BerkleySub:
     def iniciar_mudanca(self):
         pass
 
     def identificar_resposta(self, id, resp):
         msg = None
+        estado = None
         print("Cheguei Sub")
-        exit(0)
-
-
+        return estado, msg
 
 class BerkleyLider:
     def iniciar_mudanca(self):
@@ -100,10 +115,9 @@ class BerkleyLider:
 
     def identificar_resposta(self, id, resp):
         msg = None
+        estado = None
         print("Cheguei Lid")
-        exit(0)
-
-        return None, msg
+        return estado, msg
 
 def main():
 
@@ -120,14 +134,21 @@ def main():
 
         resp = comunicacao.receber()
 
-        if int(resp[:resp.index('/')]) != PID:
+        if int(resp[:resp.index('/')]) != PID and resp[resp.index('/')+1:] != '/':
             print("recebido:", resp)
 
         msg = executor.responder(resp)
 
+        if executor.timeout >= 10:
+            print("Deu timeout")
+            executor.timeout = 0
+
         if msg:
             comunicacao.enviar(str(PID) + '/' + msg)
             print("enviado:", str(PID) + '/' + msg)
+
+        else:
+            comunicacao.enviar(str(PID) + '//')
 
         time.sleep(1)
 
