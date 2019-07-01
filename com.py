@@ -18,7 +18,7 @@ class Comunicacao():
         self._sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
         self._sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         self._sock.setsockopt(IPPROTO_IP, IP_MULTICAST_TTL, 1)
-        # self._sock.setblocking(False)  # Tornando o socket com o tipo de chamada não bloqueante
+        self._sock.setblocking(False)  # Tornando o socket com o tipo de chamada não bloqueante
 
         self.mcast_group = '239.0.0.1'
         self.mcast_port = 6000
@@ -48,7 +48,10 @@ class Comunicacao():
         # if header:
         #     pass
         if msg is None:
-            msg = self._read_msg(1024)
+            try:
+                msg = self._read_msg(1024)
+            except BlockingIOError:
+                return None
 
         return msg.decode(def_cod)
 
