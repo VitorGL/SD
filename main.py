@@ -22,12 +22,9 @@ class Sistema:
         self.alg = BullyInit()
 
     def responder(self, resp):
-        if resp is None and self.timeout < 15:
-            self.timeout += 1
+        if resp is None:
+            # self.timeout += 1
             id = None
-        elif self.timeout >= 15:
-            self.timeout = 0
-            return "eleicao"
         else:
             id = int(resp[:resp.index('/')])
             resp = resp[resp.index('/') + 1:]
@@ -55,12 +52,12 @@ class BullySub:
             if resp == "lider":
                 msg = "prosseguir"
 
-            elif resp == "berkley":
-                estado = BerkleySub()
+            elif resp == "berkeley":
+                estado = BerkeleySub()
 
-            elif resp == "eleicao":
-                if PID < id:
-                    msg = "OK"
+            # elif resp == "eleicao":
+            #     if PID < id:
+            #         msg = "OK"
 
         return estado, msg
 
@@ -72,18 +69,19 @@ class BullyInit:
         estado = None
 
         if resp is None:
-            return estado, msg
+            msg = "lider"
+            estado = BullyLider()
 
         elif PID != id:
-            if resp == "OK":
-                msg = "lider"
-                estado = BullyLider()
+            # if resp == "OK":
+            #     msg = "lider"
+            #     estado = BullyLider()
 
-            elif resp == "eleicao":
+            if resp == "eleicao":
                 if PID > id:
                     msg = "eleicao"
                 else:
-                    msg = "OK"
+                    # msg = "OK"
                     estado = BullySub()
 
         return estado, msg
@@ -99,21 +97,22 @@ class BullyLider:
 
         elif PID != id:
             if resp == "prosseguir":
-                estado = BerkleyLider()
-                msg = "berkley"
+                estado = BerkeleyLider()
+                msg = "berkeley"
+                print("VIREI LIDER/" + str(PID))
 
             if resp == "eleicao":
                 if PID > id:
                     msg = "eleicao"
                     estado = BullyInit()
                 else:
-                    msg = "OK"
+                    # msg = "OK"
                     estado = BullySub()
 
         return estado, msg
 
 
-class BerkleySub:
+class BerkeleySub:
 
     @staticmethod
     def identificar_resposta(id, resp):
@@ -128,10 +127,10 @@ class BerkleySub:
                 tempo = int(resp[resp.index('-') + 1:])
             except ValueError:
                 pass
-                # raise RuntimeError("berkleysub: Recebido valor inesperado !int = {}".format(resp[resp.index('-') + 1:]))
+                # raise RuntimeError("berkeleysub: Recebido valor inesperado !int = {}".format(resp[resp.index('-') + 1:]))
             else:
                 msg = "0-" + str(relogio.get_tempo() - tempo)
-                estado = BerkleySub2()
+                estado = BerkeleySub2()
 
         if PID != id:
 
@@ -140,13 +139,13 @@ class BerkleySub:
                     msg = "eleicao"
                     estado = BullyInit()
                 else:
-                    msg = "OK"
+                    # msg = "OK"
                     estado = BullySub()
 
         return estado, msg
 
 
-class BerkleySub2:
+class BerkeleySub2:
 
     def identificar_resposta(self, id, resp):
         msg = None
@@ -162,13 +161,13 @@ class BerkleySub2:
                 o_id = int(resp[resp.index('/') + 1:])
 
             except ValueError:
-                raise RuntimeError("berkleysub: Recebido valor inesperado !int = {}".format(resp[resp.index('-') + 1:]))
+                raise RuntimeError("berkeleysub: Recebido valor inesperado !int = {}".format(resp[resp.index('-') + 1:]))
 
             if PID == o_id:
                 relogio.corrigir_tempo(tempo)
                 print("TEMPO CORRIGIDO:", relogio.get_tempo())
                 # msg = "final"
-                estado = BerkleySub()
+                estado = BerkeleySub()
 
         elif PID != id:
 
@@ -177,13 +176,13 @@ class BerkleySub2:
                     msg = "eleicao"
                     estado = BullyInit()
                 else:
-                    msg = "OK"
+                    # msg = "OK"
                     estado = BullySub()
 
         return estado, msg
 
 
-class BerkleyLider:
+class BerkeleyLider:
 
     @staticmethod
     def identificar_resposta(id, resp):
@@ -193,7 +192,8 @@ class BerkleyLider:
         if resp is None:
             t = relogio.get_tempo()
             msg = "1-" + str(t)
-            estado = BerkleyLider2(t)
+            estado = BerkeleyLider2(t)
+            print("INICIANDO BERKELEY")
 
         elif PID != id:
             if resp == "eleicao":
@@ -201,13 +201,13 @@ class BerkleyLider:
                     msg = "eleicao"
                     estado = BullyInit()
                 else:
-                    msg = "OK"
+                    # msg = "OK"
                     estado = BullySub()
 
         return estado, msg
 
 
-class BerkleyLider2:
+class BerkeleyLider2:
     def __init__(self, tempo):
         self.tempos = {}
         self.t = tempo
@@ -218,7 +218,13 @@ class BerkleyLider2:
 
         if resp is None:
             if len(self.tempos) > 1:
-                estado = BerkleyLider3(int(sum(self.tempos.values()) / len(self.tempos)), self.tempos)
+                # cont = 0
+                # for i in self.tempos:
+                #     if (self.tempos[PID] - i) >= 100:
+                #
+                # if cont
+
+                estado = BerkeleyLider3(int(sum(self.tempos.values()) / len(self.tempos)), self.tempos)
             else:
                 estado = BullyInit()
 
@@ -226,7 +232,7 @@ class BerkleyLider2:
             try:
                 tempo = int(resp[resp.index('-') + 1:])
             except ValueError:
-                raise RuntimeError("berkleysub: Recebido valor inesperado !int = {}".format(resp[resp.index('-') + 1:]))
+                raise RuntimeError("berkeleysub: Recebido valor inesperado !int = {}".format(resp[resp.index('-') + 1:]))
 
             if resp[0] == '1':
                 msg = "0-" + str(relogio.get_tempo() - tempo)
@@ -239,13 +245,13 @@ class BerkleyLider2:
                     msg = "eleicao"
                     estado = BullyInit()
                 else:
-                    msg = "OK"
+                    # msg = "OK"
                     estado = BullySub()
 
         return estado, msg
 
 
-class BerkleyLider3:
+class BerkeleyLider3:
     def __init__(self, tempo, tempos):
         self.tempos = tempos
         self.t = tempo
@@ -265,7 +271,7 @@ class BerkleyLider3:
                     msg = "1-" + str(self.t - tempo) + '/' + str(o_id)
             else:
                 # msg = "final"
-                estado = BerkleyLider()
+                estado = BerkeleyLider()
 
         elif resp[0] == '1':
             try:
@@ -274,7 +280,7 @@ class BerkleyLider3:
                 o_id = int(resp[resp.index('/') + 1:])
 
             except ValueError:
-                raise RuntimeError("berkleylider3: Recebido valor inesperado !int = {}".format(resp[resp.index('-') + 1:]))
+                raise RuntimeError("berkeleylider3: Recebido valor inesperado !int = {}".format(resp[resp.index('-') + 1:]))
 
             if PID == o_id:
                 relogio.corrigir_tempo(tempo)
@@ -286,7 +292,7 @@ class BerkleyLider3:
                     msg = "eleicao"
                     estado = BullyInit()
                 else:
-                    msg = "OK"
+                    # msg = "OK"
                     estado = BullySub()
 
         return estado, msg
